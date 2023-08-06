@@ -58,8 +58,12 @@ body{
 }
 
 
-@media (max-width: 1000px){
+.hide{
+    display: none;
+}
+
+@media (max-width: 800px){
     .welcome-screen .welcome-form{
-        margin: 10% 15px;
+        margin: 15% 15px;
     }
 }
