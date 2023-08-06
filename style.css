@@ -59,7 +59,7 @@ body{
 
 
 @media (max-width: 1000px){
-    .welcome-form{
+    .welcome-screen .welcome-form{
         margin: 10% 15px;
     }
 }
