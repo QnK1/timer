@@ -62,8 +62,14 @@ body{
     display: none;
 }
 
-@media (max-width: 800px){
+@media (max-aspect-ratio: 4/3){
     .welcome-screen .welcome-form{
         margin: 15% 15px;
+    }
+}
+
+@media (max-aspect-ratio: 3/5){
+    .welcome-screen .welcome-form{
+        margin: 25% 15px;
     }
 }
