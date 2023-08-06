@@ -60,6 +60,6 @@ body{
 
 @media (max-width: 1000px){
     .welcome-form{
-        margin: auto 15px;
+        margin: 10% 15px;
     }
 }
