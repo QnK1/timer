@@ -4,7 +4,7 @@
     --green: rgb(198, 224, 198);
     --yellow: rgb(229, 228, 180);
     --orange: rgb(248, 220, 194);
-    --red: rgb(204, 164, 164);
+    --red: rgb(208, 149, 149);
 }
 
 body{
@@ -39,8 +39,8 @@ body{
     color: var(--red);
     margin-top: 1.2rem;
     margin-bottom: 3rem;
-    font-size: 5rem;
-    text-shadow: 0.05rem 0.05rem 0.2rem rgba(255, 255, 255, 0.6);
+    font-size: 6rem;
+    text-shadow: 0.09rem 0.09rem 0.3rem rgba(255, 255, 255, 0.6);
 }
 
 .welcome-screen .name-input{
