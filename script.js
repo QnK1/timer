@@ -40,3 +40,17 @@ const welcomeButton = document.querySelector('.name-button');
 const welcomeInput = document.querySelector('.name-input');
 const welcomeScreen = document.querySelector('.welcome-screen');
 
+let userName;
+
+
+welcomeButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+
+    if(welcomeInput.value){
+        userName = welcomeInput.value;
+        welcomeScreen.classList.add('hide');
+    }
+    else{
+        welcomeInput.focus();
+    }
+});
