@@ -31,6 +31,7 @@ body{
 
 .welcome-screen .welcome-form{
     margin-top: 5%;
+    
 } 
 
 .welcome-screen .welcome-icon{
@@ -133,15 +134,12 @@ body{
 @media (max-aspect-ratio: 3/5){
     .welcome-screen .welcome-form{
         margin: 25% 15px;
+        width: 100%;
     }
-    
-    .inputs{
-        flex-direction: column;
+    .welcome-screen .name-input{
+      width: 100%;
     }
 
-    .name-button{
-        margin-top: 5%;
-    }
 }
 
 /* main timer screen */
