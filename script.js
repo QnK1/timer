@@ -1,3 +1,4 @@
+//timer object
 const Timer = {
     currTime : 0, //currently stored time
     currInterval : 0, //id of currently running setInterval
@@ -39,6 +40,10 @@ const Timer = {
 const welcomeButton = document.querySelector('.name-button');
 const welcomeInput = document.querySelector('.name-input');
 const welcomeScreen = document.querySelector('.welcome-screen');
+const playIcon = document.querySelector('.fa-play');
+const checkIcon = document.querySelector('.fa-check');
+const mainPage = document.querySelector('.main-page');
+const nameText = document.querySelector('.name-text');
 
 let userName;
 
@@ -48,9 +53,16 @@ welcomeButton.addEventListener('click', (evt) => {
 
     if(welcomeInput.value){
         userName = welcomeInput.value;
-        welcomeScreen.classList.add('hide');
+        playIcon.classList.add('no-display');
+        checkIcon.classList.remove('no-display'); //changin icon on the button to a checkmark
+
+        welcomeButton.disabled = true; //disabling the button just in case
+        welcomeScreen.classList.add('hide-animation'); 
+        mainPage.classList.add('show-animation');
+
+        nameText.innerText = userName;
     }
-    else{
-        welcomeInput.focus();
+    else{ //if the name input is empty, it just gets in focus again
+        welcomeInput.focus(); 
     }
 });
