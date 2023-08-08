@@ -92,7 +92,7 @@ body{
 }
 
 .hide-animation{
-    animation: hideScreen 1.5s forwards;
+    animation: hideScreen 2s forwards;
 }
 
 
@@ -168,7 +168,7 @@ body{
 }
 
 .show-animation{
-    animation: showScreen 1.5s forwards;
+    animation: showScreen 2s forwards;
 }
 
 .main-page .top{
