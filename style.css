@@ -1,10 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Concert+One&display=swap');
 
 :root{
-    --green: rgb(198, 224, 198);
+    --green: rgb(184, 224, 184);
     --yellow: rgb(229, 228, 180);
     --orange: rgb(248, 220, 194);
     --red: rgb(208, 149, 149);
+    --white: rgb(248, 248, 248);
 }
 
 body{
@@ -16,8 +17,11 @@ body{
 }
 
 .welcome-screen{
-    height: 100vh;
-    width: 100vw;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: var(--orange);
 
     display: flex;
@@ -40,7 +44,14 @@ body{
     margin-top: 1.2rem;
     margin-bottom: 3rem;
     font-size: 6rem;
-    text-shadow: 0.09rem 0.09rem 0.3rem rgba(255, 255, 255, 0.6);
+    text-shadow: 0.09rem 0.09rem 0.3rem rgba(255, 255, 255, 0.6); 
+}
+
+.welcome-screen .inputs{
+    display: flex;
+    gap: 2.5%;
+    align-items: center;
+    /* border: 1px solid black; */
 }
 
 .welcome-screen .name-input{
@@ -51,11 +62,37 @@ body{
     font-size: 1.6rem;
     text-align: center;
     margin-top: 0;
+    background-color: white;
+    box-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4);
 }
 
 .welcome-screen .name-input::placeholder{
     opacity: 0.5;
 }
+
+.welcome-screen .name-button{
+    padding: 0.7rem 1.7rem;
+    border-radius: 1.1rem;
+    font-size: 1.5rem;
+    border: none;
+    color: white;
+    background: var(--green);
+    box-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4);
+    cursor: pointer;
+}
+
+.welcome-screen .name-button:hover{
+    filter: brightness(105%);
+}
+
+.welcome-screen .name-button:active{
+    transform: translateY(0.3rem);
+    box-shadow: 0 0 rgba(121, 121, 121, 0.65);
+}
+
+
+/* main timer screen */
+
 
 
 .hide{

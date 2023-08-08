@@ -35,3 +35,8 @@ const Timer = {
         return (minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`;
     },
 };
+
+const welcomeButton = document.querySelector('.name-button');
+const welcomeInput = document.querySelector('.name-input');
+const welcomeScreen = document.querySelector('.welcome-screen');
+
