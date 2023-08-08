@@ -171,6 +171,43 @@ body{
     animation: showScreen 1.5s forwards;
 }
 
+.main-page .top{
+    display: flex;
+    align-items: center;
+    justify-content: center;;
+    text-align: center;
+}
+
 .main-page .hi{
-    font-size: 3rem;
+    margin-top: 1%;
+    font-size: 5rem;
+    color: var(--red);
+    text-shadow: 0.09rem 0.09rem 0.3rem rgba(255, 255, 255, 0.6); 
+}
+
+.main-page .middle{
+    margin-top: 1%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 50%;
+
+}
+
+.main-page .timer-area{
+    font-size: 12rem;
+    width: 60%;
+}
+
+.main-page .timer-text{
+    margin-left: 35%;
+    text-decoration: line-through var(--green) 0.1rem;
+    color: rgb(50, 50, 50);
+}
+
+.main-page .stats-area{
+    /* border: 2px solid black; */
+    width: 40%;
+    height: 100%;
+    margin-right: 2%;
 }
