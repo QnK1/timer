@@ -106,7 +106,9 @@ body{
     animation: hideScreen 2s forwards;
 }
 
-
+.no-display{
+    display: none;
+}
 
 @keyframes hideScreen {
     0% {
