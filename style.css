@@ -114,15 +114,11 @@ body{
     }
     100% {
       opacity: 0;
-      display: none;
+      visibility: hidden;
     }
 }
 
 
-
-.no-display{
-    display: none;
-}
 
 @keyframes hideScreen {
     0% {
@@ -130,7 +126,7 @@ body{
     }
     100% {
         opacity: 0;
-        display: none;
+        visibility: hidden;
     }
 }
 
@@ -148,7 +144,6 @@ body{
     }
     .welcome-screen .name-input{
       width: 100%;
-      font-size: 1.2rem;
     }
 
 }
