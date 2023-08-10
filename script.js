@@ -2,24 +2,31 @@
 const Timer = {
     currTime : 0, //currently stored time
     currInterval : 0, //id of currently running setInterval
+    isRunning : false,
 
     async start(){
-        this.currTime = 0; //settin the timer to 0
-
-        let startingPoint = Date.now(); //current time in ms
-        let delta; //ms since last tick
-        
-        this.currInterval = setInterval(() => {
-            /* this avoids setInterval innacuracy */
+        if(!this.isRunning){
+            this.isRunning = true;
             
-            delta = Date.now() - startingPoint;
-            startingPoint = Date.now();
-            this.currTime += delta;
-        }, 1);
+            this.currTime = 0; //settin the timer to 0
+
+            let startingPoint = Date.now(); //current time in ms
+            let delta; //ms since last tick
+            
+            this.currInterval = setInterval(() => {
+                /* this avoids setInterval innacuracy */
+                
+                delta = Date.now() - startingPoint;
+                startingPoint = Date.now();
+                this.currTime += delta;
+            }, 1);
+        }
+   
     },
 
     async stop(){
         clearInterval(this.currInterval);
+        this.isRunning = false;
     },
 
     get time(){
@@ -31,7 +38,13 @@ const Timer = {
         const seconds = Math.floor(ctime / 1000);
         ctime -= seconds * 1000;
 
-        const miliseconds = ctime;
+        let miliseconds = ctime;
+
+        if(miliseconds.toString().length > 2){
+            miliseconds = miliseconds.toString();
+            miliseconds = miliseconds.slice(0, 2);
+            miliseconds = parseInt(miliseconds);
+        }
 
         return (minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`;
     },
@@ -48,6 +61,22 @@ const nameText = document.querySelector('.name-text');
 let userName;
 
 
+const Display = {
+    displayText : document.querySelector('.timer-text'),
+    currInterval : 0,
+    async startDisplay(){
+        Timer.start();
+
+        this.currInterval = setInterval(() => {
+            this.displayText.innerText = Timer.time;
+        }, 10)
+    },
+    async stopDisplay(){
+        Timer.stop();
+        this.displayText.innerText = Timer.time; //ensuring reading is accurate
+    }
+};
+
 welcomeButton.addEventListener('click', (evt) => {
     evt.preventDefault();
 
@@ -61,8 +90,18 @@ welcomeButton.addEventListener('click', (evt) => {
         mainPage.classList.add('show-animation');
 
         nameText.innerText = userName;
+
+        window.addEventListener('keyup', (evt) => {
+            if(evt.key === ' '){
+                //start breathing
+                //start inspection
+                //start timer
+            }
+            
+        });
     }
     else{ //if the name input is empty, it just gets in focus again
         welcomeInput.focus(); 
     }
 });
+
