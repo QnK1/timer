@@ -21,7 +21,6 @@ const Timer = {
                 this.currTime += delta;
             }, 1);
         }
-   
     },
 
     async stop(){
