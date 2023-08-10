@@ -30,7 +30,10 @@ const Timer = {
     },
 
     get time(){
+        
         let ctime = this.currTime;
+        let prev = ctime;
+
     
         const minutes = Math.floor(ctime / 60000);
         ctime -= minutes * 60000;
@@ -39,12 +42,19 @@ const Timer = {
         ctime -= seconds * 1000;
 
         let miliseconds = ctime;
+        miliseconds = miliseconds.toString()
 
-        if(miliseconds.toString().length > 2){
-            miliseconds = miliseconds.toString();
-            miliseconds = miliseconds.slice(0, 2);
-            miliseconds = parseInt(miliseconds);
+        if(miliseconds.length === 2){
+            miliseconds = '0' + miliseconds;
         }
+        else if(miliseconds.length === 1){
+            miliseconds = '00' + miliseconds;
+        }
+
+        miliseconds = miliseconds.slice(0, 2);
+
+
+        console.log(`${seconds}.${miliseconds} -- ${prev}`);
 
         return (minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`;
     },
@@ -104,7 +114,9 @@ async function setScramble(){
 const Display = {
     displayText : document.querySelector('.timer-text'),
     currInterval : 0,
+    isRunning : false,
     async startDisplay(){
+        this.isRunning = true;
         Timer.start();
 
         this.currInterval = setInterval(() => {
@@ -113,8 +125,10 @@ const Display = {
     },
     async stopDisplay(){
         Timer.stop();
+        clearInterval(this.currInterval);
         this.displayText.innerText = Timer.time; //ensuring reading is accurate
-    } //kocham Emilię Lizurek najbardziej na świecie!!!!
+        this.isRunning = false;
+    }, //kocham Emilię Lizurek najbardziej na świecie!!!!
 };
 
 welcomeButton.addEventListener('click', async (evt) => {
@@ -136,6 +150,8 @@ welcomeButton.addEventListener('click', async (evt) => {
         window.addEventListener('keyup', (evt) => {
             if(evt.key === ' '){
                 //start breathing
+
+
                 //start inspection
                 //start timer
             }

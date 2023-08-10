@@ -252,7 +252,7 @@ body{
 }
 
 .main-page .timer-text{
-     text-decoration: line-through var(--yellow) 0.2rem; 
+     text-decoration: line-through var(--yellow) 0.5rem; 
      margin-bottom: 8%;
 }
 
