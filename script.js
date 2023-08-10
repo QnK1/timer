@@ -57,8 +57,48 @@ const playIcon = document.querySelector('.fa-play');
 const checkIcon = document.querySelector('.fa-check');
 const mainPage = document.querySelector('.main-page');
 const nameText = document.querySelector('.name-text');
+const scrambleArea = document.querySelector('.scramble-area');
 
 let userName;
+
+async function generateScramble(){
+    const faces = ['U', 'D', 'R', 'L', 'F', 'B'];
+    const moves = ["", "'", "2"];
+    let scramble = "";
+    const len = Math.floor(Math.random() * 3)+20;
+    let prevFace = 'A';
+    let currRandom;
+    let currFace;
+
+    for(let i=0; i<len; i++){
+        
+        currRandom = Math.floor(Math.random() * faces.length);
+        currFace = faces[currRandom];
+
+        while(currFace === prevFace){
+            currRandom = Math.floor(Math.random() * faces.length);
+            currFace = faces[currRandom];
+        }
+
+        scramble += currFace;
+        prevFace = currFace;
+
+        currRandom = Math.floor(Math.random() * moves.length);
+        scramble += moves[currRandom];
+
+        scramble += " ";
+    }
+
+    return scramble;
+};
+
+async function setScramble(){
+    const scramble = await generateScramble();
+
+    scrambleArea.innerText = scramble;
+};
+
+
 
 
 const Display = {
@@ -77,7 +117,7 @@ const Display = {
     }
 };
 
-welcomeButton.addEventListener('click', (evt) => {
+welcomeButton.addEventListener('click', async (evt) => {
     evt.preventDefault();
 
     if(welcomeInput.value){
@@ -90,6 +130,8 @@ welcomeButton.addEventListener('click', (evt) => {
         mainPage.classList.add('show-animation');
 
         nameText.innerText = userName;
+        setScramble();
+
 
         window.addEventListener('keyup', (evt) => {
             if(evt.key === ' '){
