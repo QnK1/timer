@@ -52,9 +52,6 @@ const Timer = {
 
         miliseconds = miliseconds.slice(0, 2);
 
-
-        console.log(`${seconds}.${miliseconds} -- ${prev}`);
-
         return (minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`;
     },
 };
