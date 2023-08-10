@@ -114,7 +114,7 @@ const Display = {
     async stopDisplay(){
         Timer.stop();
         this.displayText.innerText = Timer.time; //ensuring reading is accurate
-    }
+    } //kocham Emilię Lizurek najbardziej na świecie!!!!
 };
 
 welcomeButton.addEventListener('click', async (evt) => {
