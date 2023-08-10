@@ -108,9 +108,6 @@ async function setScramble(){
     scrambleArea.innerText = scramble;
 };
 
-
-
-
 const Display = {
     displayText : document.querySelector('.timer-text'),
     currInterval : 0,

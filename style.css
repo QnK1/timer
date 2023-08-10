@@ -74,7 +74,7 @@ body{
     margin-top: 0;
     background-color: white;
     box-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4);
-    /* font-family: 'Concert One', cursive; */
+    font-family: 'Concert One', cursive; 
 }
 
 .welcome-screen .name-input::placeholder{
