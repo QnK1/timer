@@ -246,6 +246,8 @@ welcomeButton.addEventListener('click', async (evt) => {
                         Display.displayText.innerText = result;
                     }
                     console.log(result);
+
+                    setScramble();
                 }
 
                 
