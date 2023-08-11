@@ -67,7 +67,7 @@ body{
 .welcome-screen .name-input{
     border: none;
     width: 20rem;
-    height: fit-content; /* should be 3rem */
+    height: 3rem; /* should be 3rem */
     border-radius: 1.1rem;
     font-size: 1.4rem;
     text-align: center;
@@ -78,10 +78,14 @@ body{
     line-height: 3rem;
     vertical-align: middle;
     color: rgba(0, 0, 0, 0.9);
+    text-decoration: none !important;
 }
 
 .welcome-screen .name-input::placeholder{
     opacity: 0.3;
+    line-height: 3rem;
+    vertical-align: middle;
+    font-size: 1.4rem;
 }
 
 .welcome-screen .name-button{
@@ -303,7 +307,7 @@ body{
 
 .main-page .ao5-summary{
     text-align: center;
-    margin-top: 1%;
+    margin-top: 1.5%;
 }
 
 .main-page .break{

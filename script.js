@@ -195,8 +195,8 @@ async function calculateAo5(){
     }
 };
 
-async function calculateMo100(){
-    
+async function calculateAo100(){
+    //ao100 calculation TODO
 };
 
 async function addTime(res){
@@ -223,6 +223,7 @@ async function addTime(res){
     }
 
     latestAo5Value.innerText = await calculateAo5();
+    statsContainer.scrollTo(0, statsContainer.scrollHeight);
 
 };
 
@@ -383,6 +384,7 @@ welcomeButton.addEventListener('click', async (evt) => {
 
                         result = newTime;
                         addTime(result);
+                        
 
                         timerArea.style.fontSize = '11rem';
                         Display.displayText.innerText = `${oldTime}+2`;
@@ -400,6 +402,7 @@ welcomeButton.addEventListener('click', async (evt) => {
                         Display.displayText.innerText = result;
                     }
 
+                    
                     setScramble();
                 }
 
