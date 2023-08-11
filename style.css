@@ -204,7 +204,7 @@ body{
     border-radius: 3rem;
     box-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4);
     /* background: rgba(255, 255, 255, 0.2); */
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.50);
     box-shadow: 1px 3px 18px -2px rgba(66, 68, 90, 1);
 }
 
@@ -296,6 +296,23 @@ body{
 
     box-shadow: inset 0px 0px 6px 1px rgba(66, 68, 90, 0.8);
 }
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+  }
 .main-page .stats-table{
     font-size: 1.3rem;
     table-layout: fixed;
@@ -305,7 +322,6 @@ body{
 
 .main-page .ao5-times td{
     width: 20%;
-    /* border: 1px solid black; */
 }
 
 .main-page .ao5-summary{
