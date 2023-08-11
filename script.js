@@ -31,14 +31,19 @@ const Timer = {
     get time(){
         
         let ctime = this.currTime;
-        let prev = ctime;
 
     
         const minutes = Math.floor(ctime / 60000);
         ctime -= minutes * 60000;
 
-        const seconds = Math.floor(ctime / 1000);
+        let seconds = Math.floor(ctime / 1000);
         ctime -= seconds * 1000;
+        seconds = seconds.toString();
+
+        if(minutes && seconds.length === 1){
+            seconds = '0' + seconds;
+        }
+
 
         let miliseconds = ctime;
         miliseconds = miliseconds.toString()
@@ -53,6 +58,13 @@ const Timer = {
         miliseconds = miliseconds.slice(0, 2);
 
         return (minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`;
+    },
+
+    get seconds(){
+        let ctime = this.currTime;
+        const seconds = Math.floor(ctime / 1000);
+
+        return seconds;
     },
 };
 
@@ -107,9 +119,10 @@ async function setScramble(){
 const Display = {
     displayText : document.querySelector('.timer-text'),
     currInterval : 0,
-    isRunning : false,
+    state : 'idle',
+    penalty : 'none',
     async startDisplay(){
-        this.isRunning = true;
+        this.state = 'timer';
         Timer.start();
 
         this.currInterval = setInterval(() => {
@@ -120,8 +133,40 @@ const Display = {
         Timer.stop();
         clearInterval(this.currInterval);
         this.displayText.innerText = Timer.time; //ensuring reading is accurate
-        this.isRunning = false;
+        this.state = 'idle';
     }, //kocham Emilię Lizurek najbardziej na świecie!!!!
+    async startInspection(){
+        this.state = 'inspection';
+        this.penalty = 'none';
+        Timer.start();
+
+        this.displayText.innerText = '0';
+        let currSeconds = 0;
+
+        this.currInterval = setInterval(() => {
+            if(Timer.seconds > currSeconds){
+                currSeconds += 1;
+
+                if(currSeconds <= 15){
+                    this.displayText.innerText = currSeconds;
+                    this.penalty = 'none';
+                }
+                else if(currSeconds <= 17){
+                    this.displayText.innerText = '+2';
+                    this.penalty = '+2';
+                }
+                else if(currSeconds > 17){
+                    this.displayText.innerText = 'DNF';
+                    this.penalty = 'DNF';
+                } 
+            }
+        }, 100)
+    },
+    stopInspection(){
+        clearInterval(this.currInterval);
+        Timer.stop();
+    }
+
 };
 
 welcomeButton.addEventListener('click', async (evt) => {
@@ -144,9 +189,66 @@ welcomeButton.addEventListener('click', async (evt) => {
             if(evt.key === ' '){
                 //start breathing
 
+                let result;
 
-                //start inspection
-                //start timer
+                if(Display.state === 'idle'){
+                    Display.startInspection();
+                }
+                else if(Display.state === 'inspection' && Display.penalty !== 'DNF'){
+                    Display.stopInspection();
+                    Display.startDisplay();
+
+                   
+                }
+                else if(Display.state === 'inspection' && Display.penalty === 'DNF'){
+                    Display.stopInspection();
+                    Display.startDisplay();
+                    
+                }
+                else if(Display.state === 'timer'){
+                    Display.stopDisplay();
+                    let result;
+
+                    if(Display.penalty === '+2'){
+                        const oldTime = Timer.time;
+                        let newTime;
+                        
+                        if(oldTime.length === 4){
+                            let secs = parseInt(oldTime.slice(0, 1));
+                            
+                            secs += 2;
+
+                            newTime = `${secs}${oldTime.slice(1, 4)}`;
+                        }
+                        else if(oldTime.length > 4){
+                            let secs = parseInt(oldTime.slice(-5, -3));
+
+                            secs += 2;
+
+                            if(oldTime.length > 5){
+                                secs = '0' + secs.toString();
+                            }
+
+                            newTime = `${oldTime.slice(0, -5)}${secs}.${oldTime.slice(-2)}`;
+                        }
+
+                        result = newTime;
+
+                        Display.displayText.innerText = `${oldTime}+2`;
+                    }
+                    else if(Display.penalty === 'none'){
+                        result = Display.displayText.innerText;
+                        //console.log(result);
+                    }
+                    else if(Display.penalty === 'DNF'){
+                        result = `DNF(${Timer.time})`;
+
+                        Display.displayText.innerText = result;
+                    }
+                    console.log(result);
+                }
+
+                
             }
             
         });
