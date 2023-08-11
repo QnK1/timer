@@ -330,7 +330,6 @@ welcomeButton.addEventListener('click', async (evt) => {
         welcomeButton.disabled = true; //disabling the button just in case
         welcomeScreen.classList.add('hide-animation'); 
         mainPage.classList.add('show-animation');
-
         nameText.innerText = userName;
         setScramble();
 
