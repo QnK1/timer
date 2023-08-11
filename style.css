@@ -255,8 +255,8 @@ body{
 }
 
 .main-page .timer-text{
-     text-decoration: line-through var(--yellow) 0.5rem; 
-     margin-bottom: 8%;
+    text-decoration: line-through var(--yellow) 0.5rem; 
+    margin-bottom: 8%;
 }
 
 .main-page .stats-area{
@@ -278,4 +278,34 @@ body{
 .main-page .stats-area, .main-page .left-side{
     background: var(--yellow);
     box-shadow: 1px 3px 18px -2px rgba(66, 68, 90, 1);
+}
+
+.main-page .stats-content  {
+    height: 55%;
+    overflow-y: scroll;
+
+    border-top: 0.3rem solid black;
+    border-bottom: 0.3rem solid black;
+
+    box-shadow: inset 0px 0px 6px 1px rgba(66, 68, 90, 0.8);
+}
+.main-page .stats-table{
+    font-size: 1.3rem;
+    table-layout: fixed;
+    width: 100%;
+    text-align: center;
+}
+
+.main-page .ao5-times td{
+    width: 20%;
+    /* border: 1px solid black; */
+}
+
+.main-page .ao5-summary{
+    text-align: center;
+    margin-top: 1%;
+}
+
+.main-page .break{
+    border-top: 0.1rem solid black;
 }

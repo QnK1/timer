@@ -76,6 +76,155 @@ const checkIcon = document.querySelector('.fa-check');
 const mainPage = document.querySelector('.main-page');
 const nameText = document.querySelector('.name-text');
 const scrambleArea = document.querySelector('.scramble-area');
+const timerArea = document.querySelector('.timer-area');
+const statsContainer = document.querySelector('.stats-content');
+
+let latestAo5;
+let latestAo5Text;
+let latestTd;
+let latestH3;
+let allTimes = [];
+let currAo5 = [];
+
+async function newAo5(){
+    const hr = document.createElement('hr');
+    hr.classList.add('break');
+
+    const table = document.createElement('table');
+    table.classList.add('stats-table');
+
+    const tr = document.createElement('tr');
+    tr.classList.add('ao5-times');
+
+    const td = [];
+
+    for(let i=0; i<5; i++){
+        td.push(document.createElement('td'));
+        //td[i].innerText = '11.23';
+    }
+
+    const h3 = document.createElement('h3');
+    h3.classList.add('ao5-summary');
+
+    const span1 = document.createElement('span');
+    span1.classList.add('ao5-text');
+    span1.innerText = 'ao5: ';
+
+    const span2 = document.createElement('span');
+    span2.classList.add('ao5-value');
+
+    statsContainer.appendChild(hr);
+
+    table.appendChild(tr);
+
+    for(let i=0; i<5; i++){
+        tr.appendChild(td[i]);
+    }
+
+    statsContainer.appendChild(table);
+
+    h3.appendChild(span1);
+    h3.appendChild(span2);
+    statsContainer.appendChild(h3);
+    statsContainer.appendChild(hr);
+
+    return [table, h3];
+};
+
+async function calculateAo5(){
+    let maxVal;
+    let minVal;
+    let DNFCount = 0;
+    let sum = 0;
+
+    if(currAo5.length < 5){
+        return '---';
+    }
+    else{ 
+        for(let i=0; i<5; i++){
+            if(currAo5[i] === 'DNF'){
+                currAo5[i] = Infinity;
+                DNFCount++;
+
+                if(DNFCount > 1){
+                    return 'DNF';
+                }
+            }
+            else if(currAo5[i].length <= 5){
+                currAo5[i] = parseFloat(currAo5[i]);
+            }
+            else{
+                let minutes = currAo5[i].slice(0, -6);
+
+                currAo5[i] = parseFloat(currAo5[i].slice(-5)) + minutes*60;
+            }
+        }
+
+        maxVal = Math.max(...currAo5);
+        minVal = Math.min(...currAo5);
+
+        for(let a of currAo5){
+
+            if(a === maxVal){
+                maxVal = -1;
+            }
+            else if(a === minVal){
+                minVal = -1;
+            }
+            else{
+                sum += a;
+            }
+        }
+
+        let av = (sum/3).toFixed(2);
+        
+        let minutes = Math.floor(av / 60);
+        av -= minutes * 60;
+        av = av.toFixed(2);
+
+        if(minutes && av.toString().length === 4){
+            av = av.toString();
+            av = '0' + av;
+        }
+
+        av = (minutes) ? `${minutes}:${av}` : `${av}`;
+        
+
+        return av;
+
+    }
+};
+
+async function calculateMo100(){
+    
+};
+
+async function addTime(res){
+    //check if new ao5 needed
+    prevNumberOfTimes = allTimes.length;
+    allTimes.push(res);
+    
+    if(prevNumberOfTimes % 5 === 0){
+        currAo5.length = 0;
+        [latestAo5, latestH3] =  await newAo5();
+
+        latestTd = latestAo5.querySelector('td');
+
+        latestTd.innerText = res;
+        currAo5.push(res);
+
+        latestAo5Value = latestH3.querySelector('.ao5-value');
+    }
+    else{
+        latestTd = latestTd.nextSibling;
+
+        latestTd.innerText = res;
+        currAo5.push(res);
+    }
+
+    latestAo5Value.innerText = await calculateAo5();
+
+};
 
 let userName;
 
@@ -175,7 +324,7 @@ welcomeButton.addEventListener('click', async (evt) => {
     if(welcomeInput.value){
         userName = welcomeInput.value;
         playIcon.classList.add('no-display');
-        checkIcon.classList.remove('no-display'); //changin icon on the button to a checkmark
+        checkIcon.classList.remove('no-display'); //changing icon on the button to a checkmark
 
         welcomeButton.disabled = true; //disabling the button just in case
         welcomeScreen.classList.add('hide-animation'); 
@@ -192,13 +341,13 @@ welcomeButton.addEventListener('click', async (evt) => {
                 let result;
 
                 if(Display.state === 'idle'){
+                    timerArea.style.fontSize = '12rem';
                     Display.startInspection();
                 }
                 else if(Display.state === 'inspection' && Display.penalty !== 'DNF'){
                     Display.stopInspection();
                     Display.startDisplay();
 
-                   
                 }
                 else if(Display.state === 'inspection' && Display.penalty === 'DNF'){
                     Display.stopInspection();
@@ -233,19 +382,23 @@ welcomeButton.addEventListener('click', async (evt) => {
                         }
 
                         result = newTime;
+                        addTime(result);
 
+                        timerArea.style.fontSize = '11rem';
                         Display.displayText.innerText = `${oldTime}+2`;
                     }
                     else if(Display.penalty === 'none'){
                         result = Display.displayText.innerText;
+                        addTime(result);
                         //console.log(result);
                     }
                     else if(Display.penalty === 'DNF'){
                         result = `DNF(${Timer.time})`;
+                        addTime('DNF');
 
+                        timerArea.style.fontSize = '10rem';
                         Display.displayText.innerText = result;
                     }
-                    console.log(result);
 
                     setScramble();
                 }
