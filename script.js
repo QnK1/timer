@@ -19,8 +19,6 @@ function msToDisplayTime(msTime){
         miliseconds = '0' + miliseconds;
     }
     
-    console.log((minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`);
-    
     return (minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`;
 }
 
@@ -59,7 +57,6 @@ const Timer = {
         
         let ctime = this.currTime;
 
-        
         const lastDigit = parseInt(ctime.toString().at(-1));
     
         if(lastDigit >= 5){
@@ -69,7 +66,7 @@ const Timer = {
             ctime -= lastDigit;
         }
     
-        return msToDisplayTime(ctime);
+        return ctime;
     },
 
     get seconds(){
@@ -161,14 +158,6 @@ async function calculateAo5(){
                     return 'DNF';
                 }
             }
-            else if(currAo5[i].length <= 5){
-                currAo5[i] = parseFloat(currAo5[i]);
-            }
-            else{
-                let minutes = currAo5[i].slice(0, -6);
-
-                currAo5[i] = parseFloat(currAo5[i].slice(-5)) + minutes*60;
-            }
         }
 
         maxVal = Math.max(...currAo5);
@@ -187,19 +176,7 @@ async function calculateAo5(){
             }
         }
 
-        let av = (sum/3).toFixed(2);
-        
-        let minutes = Math.floor(av / 60);
-        av -= minutes * 60;
-        av = av.toFixed(2);
-
-        if(minutes && av.toString().length === 4){
-            av = av.toString();
-            av = '0' + av;
-        }
-
-        av = (minutes) ? `${minutes}:${av}` : `${av}`;
-        
+        let av = (sum/3).toFixed();
 
         return av;
 
@@ -211,9 +188,11 @@ async function calculateAo100(){
 };
 
 async function addTime(res){
-    //check if new ao5 needed
+    
     prevNumberOfTimes = allTimes.length;
     allTimes.push(res);
+
+    displayTime = msToDisplayTime(res);
     
     if(prevNumberOfTimes % 5 === 0){
         currAo5.length = 0;
@@ -221,7 +200,7 @@ async function addTime(res){
 
         latestTd = latestAo5.querySelector('td');
 
-        latestTd.innerText = res;
+        latestTd.innerText = displayTime;
         currAo5.push(res);
 
         latestAo5Value = latestH3.querySelector('.ao5-value');
@@ -229,11 +208,22 @@ async function addTime(res){
     else{
         latestTd = latestTd.nextSibling;
 
-        latestTd.innerText = res;
+        latestTd.innerText = displayTime;
         currAo5.push(res);
     }
 
-    latestAo5Value.innerText = await calculateAo5();
+    const ao5MsFormat = await calculateAo5();
+    let ao5DisplayFormat;
+
+    if(ao5MsFormat !== 'DNF' && ao5MsFormat !== '---'){
+        ao5DisplayFormat = msToDisplayTime(ao5MsFormat);
+    }
+    else{
+        ao5DisplayFormat = ao5MsFormat;
+    }
+
+    
+    latestAo5Value.innerText = ao5DisplayFormat;
     statsContainer.scrollTo(0, statsContainer.scrollHeight);
 
 };
@@ -287,13 +277,13 @@ const Display = {
         Timer.start();
 
         this.currInterval = setInterval(() => {
-            this.displayText.innerText = Timer.time;
+            this.displayText.innerText = msToDisplayTime(Timer.time);
         }, 10)
     },
     async stopDisplay(){
         Timer.stop();
         clearInterval(this.currInterval);
-        this.displayText.innerText = Timer.time; //ensuring reading is accurate
+        this.displayText.innerText = msToDisplayTime(Timer.time); //ensuring reading is accurate
         this.state = 'idle';
     }, //kocham Emilię Lizurek najbardziej na świecie!!!!
     async startInspection(){
@@ -330,8 +320,6 @@ const Display = {
 
 };
 
-
-
 welcomeButton.addEventListener('click', async (evt) => {
     evt.preventDefault();
 
@@ -347,7 +335,7 @@ welcomeButton.addEventListener('click', async (evt) => {
         setScramble();
 
 
-        window.addEventListener('keyup', (evt) => {
+        window.addEventListener('keyup', async (evt) => {
             if(evt.key === ' '){
                 //start breathing
 
@@ -355,54 +343,34 @@ welcomeButton.addEventListener('click', async (evt) => {
 
                 if(Display.state === 'idle'){
                     timerArea.style.fontSize = '12rem';
-                    Display.startInspection();
+                    await Display.startInspection();
                 }
                 else if(Display.state === 'inspection'){
-                    Display.stopInspection();
-                    Display.startDisplay();
+                    await Display.stopInspection();
+                    await Display.startDisplay();
 
                 }
                 else if(Display.state === 'timer'){
-                    Display.stopDisplay();
+                    await Display.stopDisplay();
                     let result;
 
                     if(Display.penalty === '+2'){
                         const oldTime = Timer.time;
-                        let newTime;
                         
-                        if(oldTime.length === 4){
-                            let secs = parseInt(oldTime.slice(0, 1));
-                            
-                            secs += 2;
+                        let newTime = oldTime;
+                        newTime += 2000;
 
-                            newTime = `${secs}${oldTime.slice(1, 4)}`;
-                        }
-                        else if(oldTime.length > 4){
-                            let secs = parseInt(oldTime.slice(-5, -3));
-
-                            secs += 2;
-
-                            if(oldTime.length > 5){
-                                secs = '0' + secs.toString();
-                            }
-
-                            newTime = `${oldTime.slice(0, -5)}${secs}.${oldTime.slice(-2)}`;
-                        }
-
-                        result = newTime;
-                        addTime(result);
+                        addTime(newTime);
                         
 
                         timerArea.style.fontSize = '11rem';
-                        Display.displayText.innerText = `${oldTime}+2`;
+                        Display.displayText.innerText = `${msToDisplayTime(oldTime)}+2`;
                     }
                     else if(Display.penalty === 'none'){
-                        result = Display.displayText.innerText;
-                        addTime(result);
-                        //console.log(result);
+                        addTime(Timer.time);
                     }
                     else if(Display.penalty === 'DNF'){
-                        result = `DNF(${Timer.time})`;
+                        result = `DNF(${msToDisplayTime(Timer.time)})`;
                         addTime('DNF');
 
                         timerArea.style.fontSize = '10rem';
@@ -411,11 +379,8 @@ welcomeButton.addEventListener('click', async (evt) => {
 
                     
                     setScramble();
-                }
-
-                
+                } 
             }
-            
         });
     }
     else{ //if the name input is empty, it just gets in focus again
