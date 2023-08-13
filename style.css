@@ -8,13 +8,6 @@
     --white: rgb(248, 248, 248);
     --blue: rgb(196, 206, 217);
     --green-rgb: 184, 224, 184;
-
-    /* --pearl: #DDD8B8;
-    --ashgray: #B3CBB9;
-    --airyblue: #84A9C0;
-    --ultraviolet: #6a66a3;
-    --eminence: #542E71; */
-
 }
 
 body{
@@ -291,10 +284,10 @@ body{
     height: 55%;
     overflow-y: scroll;
 
-    border-top: 0.3rem solid black;
-    border-bottom: 0.3rem solid black;
+    border-top: 0.35rem solid black;
+    border-bottom: 0.35rem solid black;
 
-    box-shadow: inset 0px 0px 7px 2px rgba(66, 68, 90, 0.8);
+    box-shadow: inset 0px 0px 7px 3px rgba(66, 68, 90, 0.8);
 }
 
 /* width */
@@ -326,9 +319,23 @@ body{
 
 .main-page .ao5-summary{
     text-align: center;
-    margin-top: 1.5%;
+    margin-top: 2.5%;
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .main-page .break{
-    border-top: 0.1rem solid black;
+    border-top: 0.18rem solid black;
+}
+
+.main-page .stats-summary{
+    font-size: 1.3rem;
+    text-align: center;
+    margin-top: 7%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.best-ao5, .best-single{
+    font-size: 1.5rem;
 }

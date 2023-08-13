@@ -87,6 +87,8 @@ const nameText = document.querySelector('.name-text');
 const scrambleArea = document.querySelector('.scramble-area');
 const timerArea = document.querySelector('.timer-area');
 const statsContainer = document.querySelector('.stats-content');
+const bestSingleText = document.querySelector('.best-single');
+const bestAo5Text = document.querySelector('.best-ao5');
 
 let latestAo5;
 let latestAo5Text;
@@ -94,6 +96,8 @@ let latestTd;
 let latestH3;
 let allTimes = [];
 let currAo5 = [];
+let bestSingle = Infinity;
+let bestAo5 = Infinity;
 
 async function newAo5(){
     const hr = document.createElement('hr');
@@ -192,6 +196,12 @@ async function addTime(res){
     prevNumberOfTimes = allTimes.length;
     allTimes.push(res);
 
+    if(bestSingle > res){
+        bestSingle = res;
+
+        bestSingleText.innerText = msToDisplayTime(bestSingle);
+    }
+
     displayTime = msToDisplayTime(res);
     
     if(prevNumberOfTimes % 5 === 0){
@@ -217,6 +227,12 @@ async function addTime(res){
 
     if(ao5MsFormat !== 'DNF' && ao5MsFormat !== '---'){
         ao5DisplayFormat = msToDisplayTime(ao5MsFormat);
+
+        if(bestAo5 > ao5MsFormat){
+            bestAo5 = ao5MsFormat;
+    
+            bestAo5Text.innerText = ao5DisplayFormat;
+        }
     }
     else{
         ao5DisplayFormat = ao5MsFormat;
