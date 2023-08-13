@@ -1,3 +1,30 @@
+function msToDisplayTime(msTime){
+    const minutes = Math.floor(msTime / 60000);
+    msTime -= minutes * 60000;
+
+    let seconds = Math.floor(msTime / 1000);
+    msTime -= seconds * 1000;
+
+    seconds = seconds.toString();
+
+    if(minutes && seconds.length === 1){
+        seconds = '0' + seconds;
+    }
+
+    msTime = msTime / 10;
+
+    let miliseconds = msTime.toString().slice(0, 2);
+
+    if(miliseconds.length === 1){
+        miliseconds = '0' + miliseconds;
+    }
+    
+    console.log((minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`);
+    
+    return (minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`;
+}
+
+
 //timer object
 const Timer = {
     currTime : 0, //currently stored time
@@ -32,32 +59,17 @@ const Timer = {
         
         let ctime = this.currTime;
 
+        
+        const lastDigit = parseInt(ctime.toString().at(-1));
     
-        const minutes = Math.floor(ctime / 60000);
-        ctime -= minutes * 60000;
-
-        let seconds = Math.floor(ctime / 1000);
-        ctime -= seconds * 1000;
-        seconds = seconds.toString();
-
-        if(minutes && seconds.length === 1){
-            seconds = '0' + seconds;
+        if(lastDigit >= 5){
+            ctime += (10 - lastDigit);
         }
-
-
-        let miliseconds = ctime;
-        miliseconds = miliseconds.toString()
-
-        if(miliseconds.length === 2){
-            miliseconds = '0' + miliseconds;
+        else{
+            ctime -= lastDigit;
         }
-        else if(miliseconds.length === 1){
-            miliseconds = '00' + miliseconds;
-        }
-
-        miliseconds = miliseconds.slice(0, 2);
-
-        return (minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`;
+    
+        return msToDisplayTime(ctime);
     },
 
     get seconds(){
@@ -100,7 +112,6 @@ async function newAo5(){
 
     for(let i=0; i<5; i++){
         td.push(document.createElement('td'));
-        //td[i].innerText = '11.23';
     }
 
     const h3 = document.createElement('h3');
@@ -319,6 +330,8 @@ const Display = {
 
 };
 
+
+
 welcomeButton.addEventListener('click', async (evt) => {
     evt.preventDefault();
 
@@ -344,15 +357,10 @@ welcomeButton.addEventListener('click', async (evt) => {
                     timerArea.style.fontSize = '12rem';
                     Display.startInspection();
                 }
-                else if(Display.state === 'inspection' && Display.penalty !== 'DNF'){
+                else if(Display.state === 'inspection'){
                     Display.stopInspection();
                     Display.startDisplay();
 
-                }
-                else if(Display.state === 'inspection' && Display.penalty === 'DNF'){
-                    Display.stopInspection();
-                    Display.startDisplay();
-                    
                 }
                 else if(Display.state === 'timer'){
                     Display.stopDisplay();
