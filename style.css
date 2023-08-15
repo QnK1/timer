@@ -242,7 +242,8 @@ body{
     text-align: center;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-end;
+    flex-direction: column;
 }
 
 .main-page .scramble-area{
@@ -256,7 +257,53 @@ body{
 
 .main-page .timer-text{
     text-decoration: line-through var(--yellow) 0.5rem; 
+    
+}
+
+.main-page .timer-controls{
+    text-align: center;
+    vertical-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 23%;
+    gap: 45%;
+
+    
+    font-size: 1.5rem;
     margin-bottom: 8%;
+}
+
+.main-page .timer-controls span{
+    cursor: pointer;
+}
+
+.main-page .plus2-last{
+    display: flex;
+}
+
+.main-page .fa-plus, .main-page .fa-2{
+    font-size: 1.3rem;
+}
+
+.hide-controls{
+    visibility: hidden;
+}
+
+.show-controls{
+    visibility: visible;
+}
+
+.blue-2{
+    color: lightskyblue;
+}
+
+.red-dnf{
+    color: red;
+}
+
+.main-page .dnf-last{
+    user-select: none;
 }
 
 .main-page .stats-area{
@@ -338,4 +385,9 @@ body{
 
 .best-ao5, .best-single{
     font-size: 1.5rem;
+}
+
+
+.disabled{
+    pointer-events: none;
 }

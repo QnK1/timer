@@ -1,4 +1,7 @@
 function msToDisplayTime(msTime){
+    if(msTime === 'DNF' || msTime === Infinity)
+        return 'DNF';
+    
     const minutes = Math.floor(msTime / 60000);
     msTime -= minutes * 60000;
 
@@ -89,15 +92,34 @@ const timerArea = document.querySelector('.timer-area');
 const statsContainer = document.querySelector('.stats-content');
 const bestSingleText = document.querySelector('.best-single');
 const bestAo5Text = document.querySelector('.best-ao5');
+const deleteLast = document.querySelector('.delete-last');
+const plus2Last = document.querySelector('.plus2-last');
+const dnfLast = document.querySelector('.dnf-last');
+const timerControls = document.querySelector('.timer-controls');
 
 let latestAo5;
-let latestAo5Text;
 let latestTd;
 let latestH3;
 let allTimes = [];
+let allAo5s = [];
 let currAo5 = [];
 let bestSingle = Infinity;
 let bestAo5 = Infinity;
+let isPlus2Last = false;
+let isDNFLast = false;
+let currDNFTime;
+let latestAo5Value;
+let latestHr;
+
+
+let prevAo5;
+let prevTd;
+let prevH3;
+let prevBestSingle;
+let prevBestAo5;
+let prevAo5Value;
+let prevHr;
+
 
 async function newAo5(){
     const hr = document.createElement('hr');
@@ -140,6 +162,9 @@ async function newAo5(){
     statsContainer.appendChild(h3);
     statsContainer.appendChild(hr);
 
+    prevHr = latestHr;
+    latestHr = hr;
+
     return [table, h3];
 };
 
@@ -154,7 +179,7 @@ async function calculateAo5(){
     }
     else{ 
         for(let i=0; i<5; i++){
-            if(currAo5[i] === 'DNF'){
+            if(currAo5[i] === 'DNF' || currAo5[i] === Infinity){
                 currAo5[i] = Infinity;
                 DNFCount++;
 
@@ -182,7 +207,7 @@ async function calculateAo5(){
 
         let av = (sum/3).toFixed();
 
-        return av;
+        return parseInt(av);
 
     }
 };
@@ -192,11 +217,11 @@ async function calculateAo100(){
 };
 
 async function addTime(res){
-    
     prevNumberOfTimes = allTimes.length;
     allTimes.push(res);
 
-    if(bestSingle > res){
+    prevBestSingle = bestSingle;
+    if(bestSingle > res && res !== 'DNF' && res !== Infinity){
         bestSingle = res;
 
         bestSingleText.innerText = msToDisplayTime(bestSingle);
@@ -204,6 +229,12 @@ async function addTime(res){
 
     displayTime = msToDisplayTime(res);
     
+    
+    prevTd = latestTd;
+    prevAo5 = latestAo5;
+    prevH3 = latestH3;
+    prevBestAo5 = bestAo5;
+
     if(prevNumberOfTimes % 5 === 0){
         currAo5.length = 0;
         [latestAo5, latestH3] =  await newAo5();
@@ -213,22 +244,26 @@ async function addTime(res){
         latestTd.innerText = displayTime;
         currAo5.push(res);
 
+        prevAo5Value = latestAo5Value;
         latestAo5Value = latestH3.querySelector('.ao5-value');
     }
     else{
         latestTd = latestTd.nextSibling;
 
+        latestAo5Value = latestH3.querySelector('.ao5-value');
         latestTd.innerText = displayTime;
         currAo5.push(res);
     }
 
     const ao5MsFormat = await calculateAo5();
+
     let ao5DisplayFormat;
 
     if(ao5MsFormat !== 'DNF' && ao5MsFormat !== '---'){
         ao5DisplayFormat = msToDisplayTime(ao5MsFormat);
 
-        if(bestAo5 > ao5MsFormat){
+        if(bestAo5 > ao5MsFormat && ao5MsFormat !== 'DNF') {
+            
             bestAo5 = ao5MsFormat;
     
             bestAo5Text.innerText = ao5DisplayFormat;
@@ -239,9 +274,84 @@ async function addTime(res){
     }
 
     
-    latestAo5Value.innerText = ao5DisplayFormat;
+    latestAo5Value.innerText = (latestAo5Value) ? ao5DisplayFormat : '---';
     statsContainer.scrollTo(0, statsContainer.scrollHeight);
 
+};
+
+async function removeTime(){
+    prevTime = allTimes.pop();
+
+    if(allTimes.length !== 0){
+        bestSingle = prevBestSingle;
+        bestSingleText.innerText = msToDisplayTime(bestSingle);
+    }
+    else{
+        bestSingle = Infinity;
+        prevBestSingle = Infinity;
+        bestSingleText.innerText = '---';
+    }
+    
+
+    Display.displayText.innerText = '0.00';
+    hideControls();
+
+
+    currAo5.pop();
+
+    if(allTimes.length % 5 === 0){
+
+        latestAo5.remove();
+        latestH3.remove();
+        latestHr.remove();
+    }
+    else if((allTimes.length - 4) % 5 === 0){
+        latestTd.innerText = '';
+
+        latestAo5Value.innerText = '---';
+
+        if(prevAo5Value){
+            latestAo5Value = prevAo5Value;
+        }
+    }
+    else{
+        latestTd.innerText = '';
+        
+    }
+
+    if(prevTd)
+    latestTd = prevTd;
+
+    if(prevAo5)
+        latestAo5 = prevAo5;
+
+    if(prevH3)
+        latestH3 = prevH3;
+
+    
+
+    if(allTimes.length >= 5){
+        bestAo5 = prevBestAo5;
+        bestAo5Text.innerText = msToDisplayTime(bestAo5);
+    }
+    else{
+        bestAo5Text.innerText = '---';
+        bestAo5 = Infinity;
+    }
+        
+
+    if(prevHr)
+        latestHr = prevHr;
+
+
+    prevBestSingle = bestSingle;
+    prevAo5 = latestAo5;
+    prevH3 = latestH3;
+    prevHr = latestHr;
+    prevTd = latestTd;
+    prevBestAo5 = bestAo5;
+
+    return prevTime;
 };
 
 let userName;
@@ -281,6 +391,14 @@ async function setScramble(){
     const scramble = await generateScramble();
 
     scrambleArea.innerText = scramble;
+};
+
+async function showControls(){
+    timerControls.classList.remove('hide-controls');
+};
+
+async function hideControls(){
+    timerControls.classList.add('hide-controls');
 };
 
 const Display = {
@@ -336,6 +454,75 @@ const Display = {
 
 };
 
+async function togglePlus2Last(){
+    if(!isPlus2Last){
+        isPlus2Last = true;
+
+        dnfLast.classList.add('disabled');
+        
+        plus2Last.classList.add('blue-2');
+        let prevTime = await removeTime();
+        let newTime = prevTime + 2000;
+        await addTime(newTime);
+        Display.displayText.innerText = `${msToDisplayTime(newTime)}+`;
+        latestTd.innerText = `${latestTd.innerText}+`;
+    }
+    else{
+        isPlus2Last = false;
+
+        dnfLast.classList.remove('disabled');
+
+        plus2Last.classList.remove('blue-2');
+        let prevTime = await removeTime();
+        let newTime = prevTime - 2000;
+        await addTime(newTime);
+        Display.displayText.innerText = msToDisplayTime(newTime);
+    }
+
+
+    
+};
+
+async function toggleDNFLast(){
+    if(!isDNFLast){
+        isDNFLast = true;
+
+        plus2Last.classList.add('disabled');
+
+        dnfLast.classList.add('red-dnf');
+        currDNFTime = await removeTime();
+        await addTime('DNF');
+
+        Display.displayText.innerText = `DNF(${msToDisplayTime(currDNFTime)})`;
+        latestTd.innerText = 'DNF';
+    }
+    else{
+        isDNFLast = false;
+        plus2Last.classList.remove('disabled');
+
+        dnfLast.classList.remove('red-dnf');
+        await removeTime();
+        await addTime(currDNFTime);
+        Display.displayText.innerText = msToDisplayTime(currDNFTime);
+    }
+};
+
+plus2Last.addEventListener('click', () => {
+    togglePlus2Last();
+    showControls();
+});
+dnfLast.addEventListener('click', () => {
+    toggleDNFLast();
+    showControls();
+});
+
+deleteLast.addEventListener('click', () => {
+    removeTime();
+    setScramble();
+    Display.displayText.innerText = '0.00';
+    hideControls();
+});
+
 welcomeButton.addEventListener('click', async (evt) => {
     evt.preventDefault();
 
@@ -357,9 +544,17 @@ welcomeButton.addEventListener('click', async (evt) => {
 
                 let result;
 
+                plus2Last.classList.remove('blue-2');
+                dnfLast.classList.remove('red-dnf');
+                isPlus2Last = false;
+                isDNFLast = false;
+                plus2Last.classList.remove('disabled');
+                dnfLast.classList.remove('disabled');
+
                 if(Display.state === 'idle'){
                     timerArea.style.fontSize = '12rem';
                     await Display.startInspection();
+                    hideControls();
                 }
                 else if(Display.state === 'inspection'){
                     await Display.stopInspection();
@@ -371,33 +566,31 @@ welcomeButton.addEventListener('click', async (evt) => {
                     let result;
 
                     if(Display.penalty === '+2'){
-                        const oldTime = Timer.time;
-                        
-                        let newTime = oldTime;
-                        newTime += 2000;
+                        await addTime(Timer.time);
 
-                        addTime(newTime);
-                        
+                        togglePlus2Last();
 
-                        timerArea.style.fontSize = '11rem';
-                        Display.displayText.innerText = `${msToDisplayTime(oldTime)}+2`;
                     }
                     else if(Display.penalty === 'none'){
+                        isPlus2Last = false;
+
                         addTime(Timer.time);
                     }
                     else if(Display.penalty === 'DNF'){
-                        result = `DNF(${msToDisplayTime(Timer.time)})`;
-                        addTime('DNF');
-
+                        isPlus2Last = false;
                         timerArea.style.fontSize = '10rem';
-                        Display.displayText.innerText = result;
+                        await addTime(Timer.time);
+
+                        toggleDNFLast();
                     }
 
-                    
+                    showControls();
                     setScramble();
+                    
                 } 
             }
         });
+
     }
     else{ //if the name input is empty, it just gets in focus again
         welcomeInput.focus(); 
