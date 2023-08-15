@@ -486,6 +486,7 @@ async function togglePlus2Last(){
 async function toggleDNFLast(){
     if(!isDNFLast){
         isDNFLast = true;
+        timerArea.style.fontSize = '10rem';
 
         plus2Last.classList.add('disabled');
 
@@ -499,6 +500,8 @@ async function toggleDNFLast(){
     else{
         isDNFLast = false;
         plus2Last.classList.remove('disabled');
+
+        timerArea.style.fontSize = '12rem';
 
         dnfLast.classList.remove('red-dnf');
         await removeTime();
@@ -550,6 +553,7 @@ welcomeButton.addEventListener('click', async (evt) => {
                 isDNFLast = false;
                 plus2Last.classList.remove('disabled');
                 dnfLast.classList.remove('disabled');
+                timerArea.style.fontSize = '12rem';
 
                 if(Display.state === 'idle'){
                     timerArea.style.fontSize = '12rem';
@@ -578,7 +582,7 @@ welcomeButton.addEventListener('click', async (evt) => {
                     }
                     else if(Display.penalty === 'DNF'){
                         isPlus2Last = false;
-                        timerArea.style.fontSize = '10rem';
+                        
                         await addTime(Timer.time);
 
                         toggleDNFLast();
