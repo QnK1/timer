@@ -96,6 +96,11 @@ const deleteLast = document.querySelector('.delete-last');
 const plus2Last = document.querySelector('.plus2-last');
 const dnfLast = document.querySelector('.dnf-last');
 const timerControls = document.querySelector('.timer-controls');
+const keyboardIcon = document.querySelector('.keyboard-icon');
+const keyboard1 = document.querySelector('.fa-keyboard.fa-regular');
+const keyboard2 = document.querySelector('.fa-keyboard.fa-solid');
+const timerText = document.querySelector('.timer-text');
+const timeInput = document.querySelector('.time-input');
 
 let latestAo5;
 let latestTd;
@@ -111,6 +116,7 @@ let currDNFTime;
 let latestAo5Value;
 let latestHr;
 
+let timerMode = 'timer';
 
 let prevAo5;
 let prevTd;
@@ -457,9 +463,7 @@ const Display = {
 async function togglePlus2Last(){
     if(!isPlus2Last){
         isPlus2Last = true;
-
-        dnfLast.classList.add('disabled');
-        
+    
         plus2Last.classList.add('blue-2');
         let prevTime = await removeTime();
         let newTime = prevTime + 2000;
@@ -469,8 +473,6 @@ async function togglePlus2Last(){
     }
     else{
         isPlus2Last = false;
-
-        dnfLast.classList.remove('disabled');
 
         plus2Last.classList.remove('blue-2');
         let prevTime = await removeTime();
@@ -486,7 +488,6 @@ async function togglePlus2Last(){
 async function toggleDNFLast(){
     if(!isDNFLast){
         isDNFLast = true;
-        timerArea.style.fontSize = '10rem';
 
         plus2Last.classList.add('disabled');
 
@@ -494,14 +495,13 @@ async function toggleDNFLast(){
         currDNFTime = await removeTime();
         await addTime('DNF');
 
-        Display.displayText.innerText = `DNF(${msToDisplayTime(currDNFTime)})`;
+        Display.displayText.innerText = `DNF`;
         latestTd.innerText = 'DNF';
     }
     else{
         isDNFLast = false;
         plus2Last.classList.remove('disabled');
 
-        timerArea.style.fontSize = '12rem';
 
         dnfLast.classList.remove('red-dnf');
         await removeTime();
@@ -552,11 +552,8 @@ welcomeButton.addEventListener('click', async (evt) => {
                 isPlus2Last = false;
                 isDNFLast = false;
                 plus2Last.classList.remove('disabled');
-                dnfLast.classList.remove('disabled');
-                timerArea.style.fontSize = '12rem';
 
                 if(Display.state === 'idle'){
-                    timerArea.style.fontSize = '12rem';
                     await Display.startInspection();
                     hideControls();
                 }
@@ -599,5 +596,13 @@ welcomeButton.addEventListener('click', async (evt) => {
     else{ //if the name input is empty, it just gets in focus again
         welcomeInput.focus(); 
     }
+});
+
+keyboardIcon.addEventListener('click', () => {
+    keyboard1.classList.toggle('no-display');
+    keyboard2.classList.toggle('no-display');
+
+    timerText.classList.toggle('no-display');
+    timeInput.classList.toggle('no-display');
 });
 

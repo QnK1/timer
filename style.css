@@ -242,7 +242,7 @@ body{
     text-align: center;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     flex-direction: column;
 }
 
@@ -255,9 +255,13 @@ body{
     /* box-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4); */
 }
 
+.main-page .timer-text-container{
+   
+}
+
 .main-page .timer-text{
     text-decoration: line-through var(--yellow) 0.5rem; 
-    
+  
 }
 
 .main-page .timer-controls{
@@ -270,7 +274,7 @@ body{
     gap: 45%;
 
     
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     margin-bottom: 8%;
 }
 
@@ -283,7 +287,7 @@ body{
 }
 
 .main-page .fa-plus, .main-page .fa-2{
-    font-size: 1.3rem;
+    font-size: 1.5rem;
 }
 
 .hide-controls{
@@ -387,7 +391,33 @@ body{
     font-size: 1.5rem;
 }
 
+.main-page .keyboard-icon{
+    display: none;
+    
+    position: absolute;
+    left: 60%;
+    top: 78%;
+    font-size: 2.5rem;
+    cursor: pointer;
+    /* text-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4); */
+}
+
+.main-page .time-input{
+    border: none;
+    width: 25rem;
+    height: 5rem;
+    border-radius: 1.1rem;
+    margin-bottom: 4%;
+    font-size: 4.5rem;
+    line-height: 4.5rem;
+    text-align: center;
+    border: 0.1rem solid grey;
+    font-family: 'Concert One', cursive;
+    vertical-align: center;
+}
+
 
 .disabled{
     pointer-events: none;
 }
+
