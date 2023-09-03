@@ -50,10 +50,16 @@ body{
     text-shadow: 0.09rem 0.09rem 0.3rem rgba(255, 255, 255, 0.6); 
 }
 
+.top-mrg{
+    margin-top: 1.6rem !important;
+    margin-bottom: 3.3rem !important;
+}
+
 .welcome-screen .inputs{
     display: flex;
     gap: 2.5%;
     align-items: center;
+    justify-content: center;
     /* border: 1px solid black; */
 }
 
@@ -75,13 +81,13 @@ body{
 }
 
 .welcome-screen .name-input::placeholder{
-    opacity: 0.3;
+    opacity: 0.25;
     line-height: 3rem;
     vertical-align: middle;
     font-size: 1.4rem;
 }
 
-.welcome-screen .name-button{
+.welcome-screen .name-button, .welcome-screen .options-button{
     padding: 0.7rem 1.7rem;
     border-radius: 1.1rem;
     font-size: 1.5rem;
@@ -91,13 +97,36 @@ body{
     box-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4);
     cursor: pointer;
     transition: transform 0.05s, filter ease-in-out 0.05s;
+    font-family: 'Concert One', cursive; 
+    font-weight: bold;
+    letter-spacing: 0.3rem;
+    text-align: center;
 }
 
-.welcome-screen .name-button:hover{
+.play-icon-new{
+    margin-right: 6% !important;
+}
+
+.welcome-screen .options-button{
+    background: var(--blue);
+}
+
+.welcome-bigger{
+    width: 20rem !important;
+    height: 3.5rem !important;
+    font-size: 1.7rem !important;
+}
+
+.options-button{
+    font-size: 1.7rem !important;
+    padding: 0.8rem 1.8rem !important;
+}
+
+.welcome-screen .name-button:hover, .welcome-screen .options-button:hover{
     filter: brightness(105%);
 }
 
-.welcome-screen .name-button:active{
+.welcome-screen .name-button:active, .welcome-screen .options-button:active{
     transform: translateY(0.2rem);
     box-shadow: 0 0 rgba(121, 121, 121, 0.65);
 }
@@ -255,13 +284,12 @@ body{
     /* box-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4); */
 }
 
-.main-page .timer-text-container{
-   
-}
+
 
 .main-page .timer-text{
     text-decoration: line-through var(--yellow) 0.5rem; 
-  
+    border-radius: 10rem;
+
 }
 
 .main-page .timer-controls{
@@ -392,7 +420,6 @@ body{
 }
 
 .main-page .keyboard-icon{
-    display: none;
     
     position: absolute;
     left: 60%;
@@ -405,15 +432,35 @@ body{
 .main-page .time-input{
     border: none;
     width: 25rem;
-    height: 5rem;
+    height: 6rem;
     border-radius: 1.1rem;
     margin-bottom: 4%;
-    font-size: 4.5rem;
-    line-height: 4.5rem;
+    margin-top: 1%;
+    font-size: 5.5rem;
+    line-height: 5.5rem;
     text-align: center;
     border: 0.1rem solid grey;
     font-family: 'Concert One', cursive;
     vertical-align: center;
+}
+
+@keyframes timer-text-animation {
+    0% {
+        box-shadow: 0 0 0 0px rgba(100, 100, 100, 0.35);
+        background: rgba(100, 100, 100, 0.35);
+        text-decoration: line-through rgba(100, 100, 100, 0.35) 0.5rem; 
+
+    }
+    100% {
+        box-shadow: 0 0 0 30rem rgba(100, 100, 100, 0);
+        background: rgba(100, 100, 100, 0);
+        text-decoration: line-through var(--yellow) 0.5rem; 
+
+    }
+}
+
+.pulse{
+    animation: timer-text-animation 4s cubic-bezier(.39,2.02,1,.68);
 }
 
 

@@ -101,6 +101,9 @@ const keyboard1 = document.querySelector('.fa-keyboard.fa-regular');
 const keyboard2 = document.querySelector('.fa-keyboard.fa-solid');
 const timerText = document.querySelector('.timer-text');
 const timeInput = document.querySelector('.time-input');
+const welcomeOptions = document.querySelector('.options-button');
+const welcomeText = document.querySelector('.welcome-text');
+const welcomeButtonSpan = welcomeButton.querySelector('span');
 
 let latestAo5;
 let latestTd;
@@ -412,6 +415,7 @@ const Display = {
     currInterval : 0,
     state : 'idle',
     penalty : 'none',
+    mode : 'timer',
     async startDisplay(){
         this.state = 'timer';
         Timer.start();
@@ -526,70 +530,151 @@ deleteLast.addEventListener('click', () => {
     hideControls();
 });
 
+function validateTimeInput(userInput){
+    let regex = /^([0-5]?[0-9])\:([0-5]?[0-9])\.([0-9][0-9][0-9]?)$|^([0-5]?[0-9])\:([0-5]?[0-9])\.([0-9])$|^([0-5]?[0-9])\.([0-9]?[0-9]?[0-9])$/mg;
+
+    let data = regex.exec(userInput);
+
+    return data;
+}
+
+function convertTimeInput(userInput){
+    
+    data = validateTimeInput(userInput);
+    
+
+    if(!data){
+        return false;
+    }
+    else{
+        let counter = -1;
+        let container = [];
+
+        for(let a of data){
+            if(a){
+                counter++;
+
+                if(counter > 0)
+                    container.push(a);
+            }
+        }
+
+        let convertedTime = 0;
+
+        let minutes;
+        let seconds;
+        let milis;
+
+        if(counter === 3){
+            [minutes, seconds, milis] = container;
+
+            convertedTime += minutes * 60000;
+        }
+        else if(counter === 2){
+            [seconds, milis] = container;
+        }
+
+            
+            
+            
+
+            //console.log(seconds, milis);
+
+            let pureSeconds = parseInt(seconds);
+
+            convertedTime += pureSeconds * 1000;
+
+            if(milis.length == 1){
+                convertedTime += parseInt(milis) * 100;
+            } 
+            else if(milis.length == 2){
+                convertedTime += parseInt(milis) * 10;
+            }
+            else if(milis.length == 3){
+                convertedTime += parseInt(milis.slice(0, -1)) * 10;
+            }
+
+            return convertedTime;
+
+
+    }
+};
+
 welcomeButton.addEventListener('click', async (evt) => {
     evt.preventDefault();
 
-    if(welcomeInput.value){
-        userName = welcomeInput.value;
+    if(welcomeInput.value || welcomeOptions.hidden === false){
+        
+        if(welcomeOptions.hidden === true){
+            userName = welcomeInput.value;
+            localStorage.setItem('userName', userName);
+        }
+        
+
         playIcon.classList.add('no-display');
+        welcomeButtonSpan.innerText = '';
         checkIcon.classList.remove('no-display'); //changing icon on the button to a checkmark
 
         welcomeButton.disabled = true; //disabling the button just in case
         welcomeScreen.classList.add('hide-animation'); 
         mainPage.classList.add('show-animation');
-        nameText.innerText = userName;
+        nameText.innerText = localStorage.getItem('userName');
         setScramble();
 
 
         window.addEventListener('keyup', async (evt) => {
-            if(evt.key === ' '){
-                //start breathing
-
-                let result;
-
-                plus2Last.classList.remove('blue-2');
-                dnfLast.classList.remove('red-dnf');
-                isPlus2Last = false;
-                isDNFLast = false;
-                plus2Last.classList.remove('disabled');
-
-                if(Display.state === 'idle'){
-                    await Display.startInspection();
-                    hideControls();
-                }
-                else if(Display.state === 'inspection'){
-                    await Display.stopInspection();
-                    await Display.startDisplay();
-
-                }
-                else if(Display.state === 'timer'){
-                    await Display.stopDisplay();
+            
+            if(Display.mode === 'timer'){
+                if(evt.key === ' '){
+                    //start breathing
+    
                     let result;
-
-                    if(Display.penalty === '+2'){
-                        await addTime(Timer.time);
-
-                        togglePlus2Last();
-
+    
+                    plus2Last.classList.remove('blue-2');
+                    dnfLast.classList.remove('red-dnf');
+                    isPlus2Last = false;
+                    isDNFLast = false;
+                    plus2Last.classList.remove('disabled');
+    
+                    if(Display.state === 'idle'){
+                        await Display.startInspection();
+                        hideControls();
                     }
-                    else if(Display.penalty === 'none'){
-                        isPlus2Last = false;
-
-                        addTime(Timer.time);
+                    else if(Display.state === 'inspection'){
+                        await Display.stopInspection();
+                        await Display.startDisplay();
+    
                     }
-                    else if(Display.penalty === 'DNF'){
-                        isPlus2Last = false;
+                    else if(Display.state === 'timer'){
+                        await Display.stopDisplay();
+                        let result;
+    
+                        if(Display.penalty === '+2'){
+                            await addTime(Timer.time);
+    
+                            togglePlus2Last();
+    
+                        }
+                        else if(Display.penalty === 'none'){
+                            isPlus2Last = false;
+    
+                            addTime(Timer.time);
+                        }
+                        else if(Display.penalty === 'DNF'){
+                            isPlus2Last = false;
+                            
+                            await addTime(Timer.time);
+    
+                            toggleDNFLast();
+                        }
+    
+                        showControls();
+                        setScramble();
                         
-                        await addTime(Timer.time);
-
-                        toggleDNFLast();
-                    }
-
-                    showControls();
-                    setScramble();
-                    
-                } 
+                    } 
+                }
             }
+            
         });
 
     }
@@ -602,7 +687,84 @@ keyboardIcon.addEventListener('click', () => {
     keyboard1.classList.toggle('no-display');
     keyboard2.classList.toggle('no-display');
 
+    timeInput.value = '';
+
     timerText.classList.toggle('no-display');
     timeInput.classList.toggle('no-display');
+
+    if(Display.mode === 'timer')
+        Display.mode = 'typing';
+    else
+        Display.mode = 'timer';
 });
 
+
+
+//onDOMCOntentLoaded
+
+function firstVisit(){
+    welcomeInput.hidden = false;
+    welcomeOptions.hidden = true;
+
+    welcomeText.textContent = `Hi.`;
+    welcomeButtonSpan.innerText = '';
+
+    welcomeButton.classList.remove('welcome-bigger');
+    welcomeOptions.classList.remove('buttons-bigger');
+
+    playIcon.classList.remove('play-icon-new');
+
+    welcomeText.classList.remove('top-mrg');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if(localStorage.getItem('userName')){
+        let theName = localStorage.getItem('userName');
+        
+        welcomeInput.hidden = true;
+        welcomeOptions.hidden = false;
+
+        welcomeText.textContent = `Hi ${theName}.`;
+
+        welcomeButton.classList.add('welcome-bigger');
+        welcomeOptions.classList.add('buttons-bigger');
+
+        welcomeButtonSpan.innerText = 'START';
+        playIcon.classList.add('play-icon-new');
+
+        welcomeText.classList.add('top-mrg');
+        
+    }
+    else{
+        firstVisit();
+    }
+});
+
+welcomeOptions.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    
+    firstVisit();
+});
+
+timeInput.addEventListener('keydown', (evt) => {
+
+    if(evt.code === 'Enter'){
+        const enteredTime = timeInput.value;
+
+        const data = convertTimeInput(enteredTime);
+
+        if(data){
+            addTime(data);
+            timeInput.value = '';
+
+            plus2Last.classList.remove('blue-2');
+            dnfLast.classList.remove('red-dnf');
+            isPlus2Last = false;
+            isDNFLast = false;
+            plus2Last.classList.remove('disabled');
+            
+            setScramble();
+            showControls();
+        }
+    }
+});
