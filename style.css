@@ -135,6 +135,10 @@ body{
     animation: hideScreen 2s forwards;
 }
 
+.fa-pen-to-square{
+    transform: translateX(15%);
+}
+
 .no-display{
     display: none;
 }
@@ -448,19 +452,31 @@ body{
     0% {
         box-shadow: 0 0 0 0px rgba(100, 100, 100, 0.35);
         background: rgba(100, 100, 100, 0.35);
-        text-decoration: line-through rgba(100, 100, 100, 0.35) 0.5rem; 
 
     }
     100% {
         box-shadow: 0 0 0 30rem rgba(100, 100, 100, 0);
         background: rgba(100, 100, 100, 0);
-        text-decoration: line-through var(--yellow) 0.5rem; 
+
 
     }
 }
 
+@keyframes timer-text-line {
+    0% {
+        text-decoration: line-through rgba(red, green, blue, 0) 0.5rem; 
+
+    }
+    100% {
+        text-decoration: line-through var(--yellow) 0.5rem; 
+    }
+} 
+
+
+
+
 .pulse{
-    animation: timer-text-animation 4s cubic-bezier(.39,2.02,1,.68);
+    animation: timer-text-animation 4s, timer-text-line 4s;
 }
 
 
