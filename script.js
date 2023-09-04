@@ -778,6 +778,12 @@ timeInput.addEventListener('keydown', (evt) => {
             setScramble();
             showControls();
         }
+        else{
+            timeInput.classList.add('incorrect-input');
+            timeInput.value = '';
+            setTimeout(() => {timeInput.classList.remove('incorrect-input')}, 500);
+
+        }
     }
 });
 

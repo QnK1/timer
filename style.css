@@ -40,6 +40,7 @@ body{
     height: 150px;
     width: 150px;
     opacity: 0.75;
+    user-select: none;
 } 
 
 .welcome-screen h1{
@@ -48,6 +49,7 @@ body{
     margin-bottom: 3rem;
     font-size: 6rem;
     text-shadow: 0.09rem 0.09rem 0.3rem rgba(255, 255, 255, 0.6); 
+    user-select: none;
 }
 
 .top-mrg{
@@ -101,6 +103,7 @@ body{
     font-weight: bold;
     letter-spacing: 0.3rem;
     text-align: center;
+    user-select: none;
 }
 
 .play-icon-new{
@@ -432,6 +435,12 @@ body{
     font-size: 2.5rem;
     cursor: pointer;
     /* text-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4); */
+    transition: transform 0.05s;
+
+}
+
+.main-page .keyboard-icon:active{
+    transform: translateY(0.2rem);
 }
 
 .main-page .time-input{
@@ -447,6 +456,27 @@ body{
     border: 0.1rem solid grey;
     font-family: 'Concert One', cursive;
     vertical-align: center;
+    transition: border-width 1s, border-color 1s;
+}
+
+@keyframes shake {
+    0% {
+        margin-left: 0rem;
+    }
+    25% {
+        margin-left: 0.5rem;
+    }
+    75% {
+        margin-left: -0.5rem;
+    }
+    100% {
+        margin-left: 0rem;
+    }
+}
+
+
+.main-page .incorrect-input{
+    animation: shake 0.2s ease-in-out 0s 2;
 }
 
 .animation-center{
@@ -464,13 +494,13 @@ body{
 
 @keyframes pulse-animation {
     0% {
-      box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
-      background: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
+        background: rgba(0, 0, 0, 0.2);
     }
     100% {
-      box-shadow: 0 0 0 35rem rgba(0, 0, 0, 0);
+        box-shadow: 0 0 0 35rem rgba(0, 0, 0, 0);
     }
-  }
+}
 
 .pulse{
     animation: pulse-animation 1.5s cubic-bezier(0,.4,1,1);
