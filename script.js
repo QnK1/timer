@@ -135,9 +135,11 @@ let prevHr;
 async function newAo5(){
     const hr = document.createElement('hr');
     hr.classList.add('break');
+    hr.setAttribute('data-id', allTimes.at(-1).id);
 
     const table = document.createElement('table');
     table.classList.add('stats-table');
+    table.setAttribute('data-id', allTimes.at(-1).id);
 
     const tr = document.createElement('tr');
     tr.classList.add('ao5-times');
@@ -150,6 +152,7 @@ async function newAo5(){
 
     const h3 = document.createElement('h3');
     h3.classList.add('ao5-summary');
+    h3.setAttribute('data-id', allTimes.at(-1).id);
 
     const span1 = document.createElement('span');
     span1.classList.add('ao5-text');
@@ -171,6 +174,35 @@ async function newAo5(){
     h3.appendChild(span1);
     h3.appendChild(span2);
     statsContainer.appendChild(h3);
+
+    const xButton = document.createElement('i');
+    xButton.classList.add('fa-solid');
+    xButton.classList.add('fa-square-minus');
+    xButton.classList.add('delete-ao5');
+    h3.appendChild(xButton);
+
+    xButton.addEventListener('click', async function(){
+        const currId = parseInt(this.parentElement.dataset.id);
+
+        if(currId === allTimes.at(-1).id){
+            hideControls();
+            Display.displayText.innerText = '0.00';
+            bestText.classList.remove('display');
+            setScramble();
+        }
+        
+        deleteAo5(currId);
+
+        this.parentElement.previousSibling.remove();
+        this.parentElement.nextSibling.remove();
+        this.parentElement.remove();
+        
+        
+        
+    });
+
+
+
     statsContainer.appendChild(hr);
 
     prevHr = latestHr;
@@ -225,6 +257,67 @@ async function calculateAo5(){
 
 async function calculateAo100(){
     //ao100 calculation TODO
+};
+
+async function deleteAo5(deleteId){
+    function bsearchIndex(){
+        let l = 0;
+        let r = allTimes.length - 1;
+
+        while(l < r){
+            let mid = Math.floor((r + l) / 2);
+
+            if(allTimes[mid].id < deleteId){
+                l = mid + 1;
+            }
+            else if(allTimes[mid].id > deleteId){
+                r = mid - 1;
+            }
+            else if(allTimes[mid].id === deleteId){
+                return mid;
+            }
+        }
+
+        return l;
+    }
+
+    allTimes.splice(bsearchIndex(), 1);
+
+    if(allTimes.length === 0){
+        bestSingleText.innerText = '---';
+        bestSingle = Infinity;
+
+        bestAo5 = Infinity;
+        bestAo5Text.innerText = '---';
+
+    }
+    else{
+        let newBest = Infinity;
+
+        allTimes.forEach((el) => {
+            newBest = Math.min(newBest, Math.min(...el.times.filter((el) => !isNaN(el))));
+        });
+
+
+        bestSingle = newBest;
+        bestSingleText.innerText = msToDisplayTime(bestSingle);
+
+        let newBestAo5 = Infinity;
+
+        allTimes.forEach((el) => {
+            if(!isNaN(el.ao5)){
+                newBestAo5 = Math.min(newBestAo5, el.ao5);
+            }
+        });
+
+        bestAo5 = newBestAo5;
+
+        bestAo5Text.innerText = msToDisplayTime(bestAo5);
+
+        if(bestAo5Text.innerText === 'DNF' && allTimes.length === 1)
+            bestAo5Text.innerText = '---';
+
+    }
 };
 
 async function addTime(res){
@@ -308,11 +401,14 @@ async function addTime(res){
     }
 
     const ao5MsFormat = await calculateAo5();
+    allTimes.at(-1).ao5 = ao5MsFormat;
+
 
     let ao5DisplayFormat;
 
     if(ao5MsFormat !== 'DNF' && ao5MsFormat !== '---'){
         ao5DisplayFormat = msToDisplayTime(ao5MsFormat);
+        
 
         if(bestAo5 > ao5MsFormat && ao5MsFormat !== 'DNF') {
             
@@ -347,8 +443,13 @@ async function removeTime(){
         allLen = (allTimes.length - 1) * 5 + allTimes.at(-1).times.length;
     }
 
-    if(allLen % 5 === 0)
+    if(allLen % 5 === 0){
         allTimes.pop();
+    }
+    else{
+        allTimes.at(-1).ao5 = '---';
+    }
+        
     
     if(allLen !== 0){
         bestSingle = prevBestSingle;

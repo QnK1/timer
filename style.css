@@ -346,6 +346,18 @@ body{
     user-select: none;
 }
 
+.main-page .plus2-last:hover{
+    filter: brightness(250%);
+}
+
+.main-page .dnf-last:hover{
+    filter: brightness(250%);
+}
+
+.main-page .delete-last:hover{
+    filter: brightness(250%);
+}
+
 .main-page .stats-area{
     /* border: 2rem solid var(--yellow); */
     border-radius: 3rem;
@@ -409,10 +421,25 @@ body{
     margin-top: 2.5%;
     font-size: 1.2rem;
     font-weight: 600;
+    position: relative;
 }
 
 .main-page .break{
     border-top: 0.18rem solid black;
+}
+
+.main-page .delete-ao5{
+    display: inline;
+    position: absolute;
+    right: 4%;
+    bottom: -40%;
+    font-size: 0.95rem;
+    cursor: pointer;
+    color: rgb(80, 80, 80);
+}
+
+.main-page .delete-ao5:hover{
+    filter: brightness(140%);
 }
 
 .main-page .stats-summary{
@@ -437,6 +464,10 @@ body{
     /* text-shadow: 0 0.25rem 0.5rem rgba(121, 121, 121, 0.4); */
     transition: transform 0.05s;
 
+}
+
+.main-page .keyboard-icon:hover{
+    filter: brightness(250%);
 }
 
 .main-page .keyboard-icon:active{
