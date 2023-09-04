@@ -228,8 +228,41 @@ async function calculateAo100(){
 };
 
 async function addTime(res){
-    prevNumberOfTimes = allTimes.length;
-    allTimes.push(res);
+    
+    if(allTimes.length <= 1){
+        if(allTimes.length === 0){
+            prevNumberOfTimes = 0;
+        }
+        else{
+        prevNumberOfTimes = allTimes.at(-1).times.length;
+    }
+        
+    }
+    else{
+        prevNumberOfTimes = (allTimes.length - 1) * 5 + allTimes.at(-1).times.length;
+    }
+    
+    if(prevNumberOfTimes % 5 === 0){
+        
+        let newId;
+        
+        if(prevNumberOfTimes !== 0){
+            newId = allTimes.at(-1).id + 1;
+        }
+        else{
+            newId = 1;
+        }
+        
+        
+        allTimes.push({
+            id : newId,
+            times : [res]
+        });
+    }
+    else{
+        allTimes.at(-1).times.push(res);
+    }
+
     bestText.classList.remove('display');
 
     prevBestSingle = bestSingle;
@@ -299,10 +332,25 @@ async function addTime(res){
 };
 
 async function removeTime(){
-    prevTime = allTimes.pop();
+    prevTime = allTimes.at(-1).times.pop();
+
+
+
     bestText.classList.remove('display');
 
-    if(allTimes.length !== 0){
+    let allLen;
+
+    if(allTimes.length <= 1){
+        allLen = allTimes.at(-1).times.length;
+    }
+    else{
+        allLen = (allTimes.length - 1) * 5 + allTimes.at(-1).times.length;
+    }
+
+    if(allLen % 5 === 0)
+        allTimes.pop();
+    
+    if(allLen !== 0){
         bestSingle = prevBestSingle;
         bestSingleText.innerText = msToDisplayTime(bestSingle);
     }
@@ -319,13 +367,13 @@ async function removeTime(){
 
     currAo5.pop();
 
-    if(allTimes.length % 5 === 0){
+    if(allLen % 5 === 0){
 
         latestAo5.remove();
         latestH3.remove();
         latestHr.remove();
     }
-    else if((allTimes.length - 4) % 5 === 0){
+    else if((allLen - 4) % 5 === 0){
         latestTd.innerText = '';
 
         latestAo5Value.innerText = '---';
@@ -350,7 +398,7 @@ async function removeTime(){
 
     
 
-    if(allTimes.length >= 5){
+    if(allLen >= 5){
         bestAo5 = prevBestAo5;
         bestAo5Text.innerText = msToDisplayTime(bestAo5);
     }
