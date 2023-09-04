@@ -104,6 +104,8 @@ const timeInput = document.querySelector('.time-input');
 const welcomeOptions = document.querySelector('.options-button');
 const welcomeText = document.querySelector('.welcome-text');
 const welcomeButtonSpan = welcomeButton.querySelector('span');
+const animationCenter = document.querySelector('.animation-center');
+const bestText = document.querySelector('.best-text');
 
 let latestAo5;
 let latestTd;
@@ -228,12 +230,20 @@ async function calculateAo100(){
 async function addTime(res){
     prevNumberOfTimes = allTimes.length;
     allTimes.push(res);
+    bestText.classList.remove('display');
 
     prevBestSingle = bestSingle;
     if(bestSingle > res && res !== 'DNF' && res !== Infinity){
         bestSingle = res;
 
         bestSingleText.innerText = msToDisplayTime(bestSingle);
+
+        animationCenter.classList.add('pulse');
+        animationCenter.style.display = 'block';
+
+        bestText.classList.add('display');
+
+
     }
 
     displayTime = msToDisplayTime(res);
@@ -290,6 +300,7 @@ async function addTime(res){
 
 async function removeTime(){
     prevTime = allTimes.pop();
+    bestText.classList.remove('display');
 
     if(allTimes.length !== 0){
         bestSingle = prevBestSingle;
@@ -603,7 +614,7 @@ function convertTimeInput(userInput){
 welcomeButton.addEventListener('click', async (evt) => {
     evt.preventDefault();
 
-    if(welcomeInput.value || welcomeOptions.hidden === false){
+    if(welcomeInput.value.trim() || welcomeOptions.hidden === false){
         
         if(welcomeOptions.hidden === true){
             userName = welcomeInput.value;
@@ -635,6 +646,7 @@ welcomeButton.addEventListener('click', async (evt) => {
                     isPlus2Last = false;
                     isDNFLast = false;
                     plus2Last.classList.remove('disabled');
+                    bestText.classList.remove('display');
     
                     if(Display.state === 'idle'){
                         await Display.startInspection();
@@ -767,4 +779,9 @@ timeInput.addEventListener('keydown', (evt) => {
             showControls();
         }
     }
+});
+
+animationCenter.addEventListener('animationend', (evt) => {
+    animationCenter.classList.remove('pulse');
+    animationCenter.style.display = 'none';
 });
