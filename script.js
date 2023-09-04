@@ -177,7 +177,7 @@ async function newAo5(){
 
     const xButton = document.createElement('i');
     xButton.classList.add('fa-solid');
-    xButton.classList.add('fa-square-minus');
+    xButton.classList.add('fa-trash-can');
     xButton.classList.add('delete-ao5');
     h3.appendChild(xButton);
 

@@ -418,7 +418,7 @@ body{
 
 .main-page .ao5-summary{
     text-align: center;
-    margin-top: 2.5%;
+    margin-top: 3.5%;
     font-size: 1.2rem;
     font-weight: 600;
     position: relative;
@@ -431,11 +431,11 @@ body{
 .main-page .delete-ao5{
     display: inline;
     position: absolute;
-    right: 4%;
+    right: 3%;
     bottom: -40%;
-    font-size: 0.95rem;
+    font-size: 1rem;
     cursor: pointer;
-    color: rgb(80, 80, 80);
+    color: rgb(50, 50, 50);
 }
 
 .main-page .delete-ao5:hover{
