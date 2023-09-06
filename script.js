@@ -109,6 +109,8 @@ const welcomeText = document.querySelector('.welcome-text');
 const welcomeButtonSpan = welcomeButton.querySelector('span');
 const animationCenter = document.querySelector('.animation-center');
 const bestText = document.querySelector('.best-text');
+const loader = document.querySelector('.loader');
+const blocker = document.querySelector('.blocker');
 
 let latestAo5;
 let latestTd;
@@ -133,6 +135,8 @@ let prevBestSingle;
 let prevBestAo5;
 let prevAo5Value;
 let prevHr;
+
+let timesLoading = false;
 
 
 async function newAo5(){
@@ -262,31 +266,98 @@ async function calculateAo100(){
     //ao100 calculation TODO
 };
 
-function bsearchIndex(deleteId){
-    let l = 0;
-    let r = allTimes.length - 1;
-
-    while(l < r){
-        let mid = Math.floor((r + l) / 2);
-
-        if(allTimes[mid].id < deleteId){
-            l = mid + 1;
-        }
-        else if(allTimes[mid].id > deleteId){
-            r = mid - 1;
-        }
-        else if(allTimes[mid].id === deleteId){
-            return mid;
-        }
+function unsaveAo5(currIndex){
+    if(allTimes.length === 1){
+        localStorage.removeItem('session1');
     }
+    else if(currIndex === allTimes.length - 1){
+        let firstComma;
 
-    return l;
+        const currSaveState = localStorage.getItem('session1');
+
+        let commaCounter = 0;
+        let firstIndex;
+
+        const lastAo5Times = allTimes.at(-1).times.length;
+
+        for(let i=currSaveState.length - 1; i>=0; i--){
+            if(currSaveState.at(i) === ','){
+                commaCounter++;
+
+                if(commaCounter === lastAo5Times){
+                    firstIndex = i;
+                    break;
+                }
+            }
+        }
+
+        const newSaveState = currSaveState.substring(0, firstIndex);
+
+        localStorage.setItem('session1', newSaveState);
+    }
+    else{
+        
+        const currSaveState = localStorage.getItem('session1');
+
+        let commaCounter = 0;
+        let firstIndex;
+        let lastIndex;
+
+        let firstFound = false;
+
+        for(let i = 0; i<currSaveState.length; i++){
+            
+            if(currSaveState[i] === ','){
+                commaCounter++;
+            }
+
+            if(commaCounter === (currIndex)*5 && !firstFound){
+                firstIndex = i;
+                firstFound = true;
+            }
+
+            if(commaCounter === (currIndex)*5 + 5){
+                lastIndex = i;
+                break;
+            }
+        }
+
+        let newSaveState = `${currSaveState.substring(0, firstIndex)}${currSaveState.substring(lastIndex, currSaveState.length)}`;
+        if(currIndex === 0)
+            newSaveState = newSaveState.slice(1);
+
+        localStorage.setItem('session1', newSaveState);
+
+    }
 };
 
 async function deleteAo5(deleteId){
+    function bsearchIndex(){
+        let l = 0;
+        let r = allTimes.length - 1;
     
+        while(l < r){
+            let mid = Math.floor((r + l) / 2);
+    
+            if(allTimes[mid].id < deleteId){
+                l = mid + 1;
+            }
+            else if(allTimes[mid].id > deleteId){
+                r = mid - 1;
+            }
+            else if(allTimes[mid].id === deleteId){
+                return mid;
+            }
+        }
+    
+        return l;
+    };
 
-    allTimes.splice(bsearchIndex(deleteId), 1);
+    const currIndex = bsearchIndex();
+
+    unsaveAo5(currIndex);
+
+    allTimes.splice(currIndex, 1);
 
     if(allTimes.length === 0){
         bestSingleText.innerText = '---';
@@ -325,7 +396,34 @@ async function deleteAo5(deleteId){
     }
 };
 
+function saveTime(res){
+    if(allTimes.length === 0){
+        localStorage.setItem('session1', `${res}`);
+    }
+    else{
+        const currSaveState = localStorage.getItem('session1');
+
+        localStorage.setItem('session1', `${currSaveState},${res}`);
+    }
+};
+
+function unsaveLast(){
+    if(allTimes[0].times.length === 1){
+        localStorage.removeItem('session1');
+    }
+    else{
+        const currSaveState = localStorage.getItem('session1');
+        const lastComma = currSaveState.lastIndexOf(',');
+    
+        const newSaveState = currSaveState.substring(0, lastComma);
+
+        localStorage.setItem('session1', newSaveState);
+    }
+};
+
 async function addTime(res){
+    
+    saveTime(res);
     
     if(allTimes.length <= 1){
         if(allTimes.length === 0){
@@ -436,6 +534,9 @@ async function addTime(res){
 };
 
 async function removeTime(){
+    
+    unsaveLast();
+    
     prevTime = allTimes.at(-1).times.pop();
 
 
@@ -798,7 +899,7 @@ welcomeButton.addEventListener('click', async (evt) => {
         window.addEventListener('keyup', async (evt) => {
             
             if(Display.mode === 'timer'){
-                if(evt.key === ' '){
+                if(evt.key === ' ' && !timesLoading){
                     //start breathing
     
                     let result;
@@ -889,9 +990,38 @@ function firstVisit(){
     playIcon.classList.remove('play-icon-new');
 
     welcomeText.classList.remove('top-mrg');
-}
+};
 
-document.addEventListener('DOMContentLoaded', () => {
+async function loadSavedTimes(){
+    startLoading();
+    
+    if(localStorage.getItem('session1')){
+        const saveData = localStorage.getItem('session1');
+        const dataArray = saveData.split(',');
+
+        for(let a of dataArray){
+            await addTime(parseInt(a));
+        }
+    }
+    
+    stopLoading();
+    
+};
+
+function startLoading(){
+    loader.classList.remove('no-display');
+    blocker.classList.remove('no-display');
+    timesLoading = true;
+    
+};
+
+function stopLoading(){
+    loader.classList.add('no-display');
+    blocker.classList.add('no-display');
+    timesLoading = false;
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
     if(localStorage.getItem('userName')){
         let theName = localStorage.getItem('userName');
         
@@ -907,6 +1037,8 @@ document.addEventListener('DOMContentLoaded', () => {
         playIcon.classList.add('play-icon-new');
 
         welcomeText.classList.add('top-mrg');
+
+        await loadSavedTimes();
         
     }
     else{
