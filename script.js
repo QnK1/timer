@@ -467,7 +467,7 @@ async function addTime(res){
 
         bestSingleText.innerText = msToDisplayTime(bestSingle);
 
-        if(prevNumberOfTimes !== 0){
+        if(prevNumberOfTimes !== 0 && !timesLoading){
             animationCenter.classList.add('pulse');
             animationCenter.style.display = 'block';
     
