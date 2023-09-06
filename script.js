@@ -14,13 +14,16 @@ function msToDisplayTime(msTime){
         seconds = '0' + seconds;
     }
 
-    msTime = msTime / 10;
+    
+    msTime = Math.round(msTime / 10);
 
     let miliseconds = msTime.toString().slice(0, 2);
 
     if(miliseconds.length === 1){
         miliseconds = '0' + miliseconds;
     }
+
+    // console.log(miliseconds);
     
     return (minutes) ? `${minutes}:${seconds}.${miliseconds}` : `${seconds}.${miliseconds}`;
 }
@@ -259,29 +262,31 @@ async function calculateAo100(){
     //ao100 calculation TODO
 };
 
-async function deleteAo5(deleteId){
-    function bsearchIndex(){
-        let l = 0;
-        let r = allTimes.length - 1;
+function bsearchIndex(deleteId){
+    let l = 0;
+    let r = allTimes.length - 1;
 
-        while(l < r){
-            let mid = Math.floor((r + l) / 2);
+    while(l < r){
+        let mid = Math.floor((r + l) / 2);
 
-            if(allTimes[mid].id < deleteId){
-                l = mid + 1;
-            }
-            else if(allTimes[mid].id > deleteId){
-                r = mid - 1;
-            }
-            else if(allTimes[mid].id === deleteId){
-                return mid;
-            }
+        if(allTimes[mid].id < deleteId){
+            l = mid + 1;
         }
-
-        return l;
+        else if(allTimes[mid].id > deleteId){
+            r = mid - 1;
+        }
+        else if(allTimes[mid].id === deleteId){
+            return mid;
+        }
     }
 
-    allTimes.splice(bsearchIndex(), 1);
+    return l;
+};
+
+async function deleteAo5(deleteId){
+    
+
+    allTimes.splice(bsearchIndex(deleteId), 1);
 
     if(allTimes.length === 0){
         bestSingleText.innerText = '---';
@@ -364,10 +369,13 @@ async function addTime(res){
 
         bestSingleText.innerText = msToDisplayTime(bestSingle);
 
-        animationCenter.classList.add('pulse');
-        animationCenter.style.display = 'block';
+        if(prevNumberOfTimes !== 0){
+            animationCenter.classList.add('pulse');
+            animationCenter.style.display = 'block';
+    
+            bestText.classList.add('display');
+        }
 
-        bestText.classList.add('display');
 
 
     }
@@ -691,6 +699,8 @@ deleteLast.addEventListener('click', () => {
 });
 
 function validateTimeInput(userInput){
+    userInput = userInput.trim();
+    
     let regex = /^([0-5]?[0-9])\:([0-5]?[0-9])\.([0-9][0-9][0-9]?)$|^([0-5]?[0-9])\:([0-5]?[0-9])\.([0-9])$|^([0-5]?[0-9])\.([0-9]?[0-9]?[0-9])$/mg;
 
     let data = regex.exec(userInput);
@@ -778,6 +788,9 @@ welcomeButton.addEventListener('click', async (evt) => {
         welcomeButton.disabled = true; //disabling the button just in case
         welcomeScreen.classList.add('hide-animation'); 
         mainPage.classList.add('show-animation');
+
+        setTimeout(() => {welcomeScreen.remove()}, 3000);
+
         nameText.innerText = localStorage.getItem('userName');
         setScramble();
 
@@ -899,6 +912,8 @@ document.addEventListener('DOMContentLoaded', () => {
     else{
         firstVisit();
     }
+
+
 });
 
 welcomeOptions.addEventListener('click', (evt) => {
@@ -936,7 +951,7 @@ timeInput.addEventListener('keydown', (evt) => {
     }
 });
 
-animationCenter.addEventListener('animationend', (evt) => {
+animationCenter.addEventListener('animationend', () => {
     animationCenter.classList.remove('pulse');
     animationCenter.style.display = 'none';
 });
