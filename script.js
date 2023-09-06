@@ -1000,10 +1000,14 @@ async function loadSavedTimes(){
         const dataArray = saveData.split(',');
 
         for(let a of dataArray){
-            await addTime(parseInt(a));
+            if(a === 'DNF')
+                await addTime(a);
+            else
+                await addTime(parseInt(a));
         }
     }
     
+    bestText.classList.remove('display');
     stopLoading();
     
 };
