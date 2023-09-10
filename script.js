@@ -14,8 +14,28 @@ function msToDisplayTime(msTime){
         seconds = '0' + seconds;
     }
 
+    if(msTime % 10 < 5){
+        msTime -= (msTime % 10);
+    }
+    else{
+        msTime += (10 - (msTime % 10));
+    }
+
+    if(msTime === 1000){
+        seconds = parseInt(seconds) + 1;
+        msTime = 0;
+
+        if(minutes && seconds.length === 1){
+            seconds = '0' + seconds;
+        }
+    }
+    else{
+        msTime = msTime / 10;
+    }
+
     
-    msTime = Math.round(msTime / 10);
+
+    
 
     let miliseconds = msTime.toString().slice(0, 2);
 
